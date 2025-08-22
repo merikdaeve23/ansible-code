@@ -1,0 +1,23 @@
+---  
+- name: installation of web servers and start service
+  hosts: all
+  tasks:
+  - name: installing the package
+    yum:
+      name: httpd
+      state: latest
+     
+  - name: Creating a webpage
+    copy:
+      content: " hello, from shruti "
+      dest: /var/www/html/index.html
+    tags:
+    - webpage
+     
+  - name:  start the service
+    service:
+      name: httpd
+      state: started
+      enabled: true
+    tags:
+    - service
