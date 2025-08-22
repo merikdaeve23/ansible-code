@@ -1,0 +1,29 @@
+name: ROLES DEPLOY OF NGINX
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ansible-deploy:
+    runs-on: ansible-master
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ansible Role
+        run: |
+          ansible-galaxy install -p /home/merik/ansible/roles   geerlingguy.nginx
+      
+      - name: Run Ansible playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+        run: |
+          pwd
+          cp /home/merik/ansible/inventory.yaml  /home/merik/ansible/roles/inventory.yaml 
+          cp /home/merik/ansible/ansible.cfg  /home/merik/ansible/roles/ansible.cfg 
+          ansible-playbook  ./ansible/site.yaml -i /home/merik/ansible/inventory.yaml  --become
